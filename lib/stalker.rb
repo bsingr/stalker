@@ -68,6 +68,7 @@ module Stalker
 
 	def work_one_job
 		job = beanstalk.reserve
+		job_id = job.id
 		name, args = JSON.parse job.body
 		log_job_begin(name, args)
 		handler = @@handlers[name]
@@ -80,7 +81,7 @@ module Stalker
 						block.call(name)
 					end
 				end
-				handler.call(args)
+				handler.call([job_id, args])
 			end
 		rescue Timeout::Error
 			raise JobTimeout, "#{name} hit #{job.ttr-1}s timeout"
