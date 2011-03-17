@@ -5,6 +5,10 @@ require 'timeout'
 
 module Stalker
 	extend self
+	
+	def logger=(logger)
+	  @@logger = logger
+	end
 
 	def connect(url)
 		@@url = url
@@ -127,11 +131,11 @@ module Stalker
 	end
 
 	def log(msg)
-		puts msg
+	  @@logger ? @@logger.info(msg) : puts(msg)
 	end
 
 	def log_error(msg)
-		STDERR.puts msg
+	  @@logger ? @@logger.error(msg) : STDERR.puts(msg)
 	end
 
 	def beanstalk
